@@ -1,5 +1,6 @@
 import "server-only";
 
+import { cache } from "react";
 import { cookies } from "next/headers";
 import { getFirebaseAuth } from "./firebase";
 
@@ -35,8 +36,10 @@ export async function destroySession() {
  * Verify the session cookie with the Admin SDK. Returns the decoded
  * claims (uid, email, ...) or null when there is no valid session.
  * Every gated Server Component / Server Action goes through this.
+ * Memoized with React cache() so layout + page checks in the same
+ * request verify once (per the Next.js auth guide's DAL pattern).
  */
-export async function verifySession() {
+export const verifySession = cache(async () => {
   const cookieStore = await cookies();
   const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME)?.value;
   if (!sessionCookie) return null;
@@ -47,4 +50,4 @@ export async function verifySession() {
   } catch {
     return null;
   }
-}
+});
