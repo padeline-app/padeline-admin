@@ -1,0 +1,3 @@
+interface:
+  display_name: "Padeline File Placement"
+  short_description: "Classify new files by project ownership"

@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "db:introspect": "drizzle-kit introspect"
+    "db:introspect": "drizzle-kit introspect --config src/lib/drizzle/config.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

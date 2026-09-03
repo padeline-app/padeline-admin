@@ -1,36 +1,102 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Padeline Admin
 
-## Getting Started
+Internal operations portal for managing Padeline players, venues, and sessions.
 
-First, run the development server:
+## Getting started
 
 ```bash
+cp .env.template .env                    # fill DATABASE_URL with a non-production Padeline database
+gcloud auth application-default login    # Firebase Admin SDK credentials locally
+npm install
+npm run db:introspect                    # regenerate src/lib/drizzle/schema
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000/admin](http://localhost:3000/admin).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Current status
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Access is two-layered: a verified `@padeline.net` Google account (token claims,
+checked on every request) plus an active `admin_user` row. The row is created
+automatically on first sign-in — no manual provisioning. Revoke a person by
+soft-deleting their row; their next request is denied. Future sign-in providers
+(Apple) reuse the same `createAdminSession` action unchanged.
 
-## Learn More
+## Project structure
 
-To learn more about Next.js, take a look at the following resources:
+Application code lives in `src/`. Configuration, environment files, and static assets stay at the project root.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```text
+padeline-admin/
+├── .agents/skills/              # Project-specific agent conventions
+├── public/                     # Static files served directly
+├── src/
+│   ├── app/                    # Next.js routes, layouts, route handlers, and global CSS
+│   │   ├── (auth)/             # Sign-in and access-denied routes
+│   │   └── admin/              # Protected portal routes under /admin
+│   │       ├── layout.tsx      # Portal chrome (sidebar + header) and admin gate
+│   │       ├── page.tsx        # Dashboard
+│   │       ├── players/
+│   │       ├── sessions/
+│   │       └── venues/
+│   ├── components/
+│   │   ├── header/             # Shared portal chrome (index.tsx)
+│   │   ├── sidebar/
+│   │   └── ui/                 # Shadcn-managed primitives
+│   ├── lib/
+│   │   ├── drizzle/            # config.ts, client.ts (server-only), generated schema/, types
+│   │   ├── firebase/           # admin.ts (server-only), client.ts (browser), admin-auth.tsx (auth provider)
+│   │   ├── format.ts           # Shared display formatting
+│   │   ├── types.ts            # Shared types
+│   │   └── utils.ts
+│   ├── screens/                # Client screens grouped by feature
+│   │   ├── dashboard/dashboard-screen/
+│   │   ├── players/players-screen/
+│   │   ├── sessions/sessions-screen/
+│   │   ├── sign-in/sign-in-screen/
+│   │   └── denied/denied-screen/
+│   ├── server/                 # Server-only application logic, grouped by feature
+│   │   ├── auth/               # Admin checks, sessions, and auth mutations
+│   │   ├── dashboard/api.ts    # Dashboard reads
+│   │   ├── players/api.ts      # Player reads
+│   │   ├── sessions/api.ts     # Session reads
+│   │   └── venues/api.ts       # Venue reads
+│   └── proxy.ts                # Lightweight request redirects
+├── .env                        # Local environment values; CI/CD injects deployed values
+├── components.json             # shadcn configuration
+├── drizzle.config.ts           # Drizzle introspection configuration
+├── next.config.ts              # Next.js configuration
+├── package.json                # Dependencies and commands
+└── tsconfig.json               # TypeScript configuration and import aliases
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## How to navigate the project
 
-## Deploy on Vercel
+Follow a feature from its URL to its data source:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```text
+URL → src/app/admin/<feature>/page.tsx → src/screens/<feature>/<feature>-screen → src/server/<feature>/api.ts → src/lib/drizzle
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `page.tsx` is a thin server adapter: it handles route inputs, awaits the feature's server API, and renders the screen with the data as props.
+- A screen is a `"use client"` folder — `<feature>-screen/index.tsx` is the screen itself and orchestrates the page's UI and logic.
+- One-off, non-shadcn components for a screen live inside the screen folder; every screen and component is a folder whose `index.tsx` is the implementation (no re-export shims, no direct `.tsx` imports).
+- File and folder names are kebab-case. Component names are PascalCase, functions camelCase.
+- Shadcn primitives stay as generated in `src/components/ui`; install them with the shadcn CLI.
+- Components genuinely shared across features (header, sidebar) live directly under `src/components/<name>/index.tsx`.
+- Reads and server business logic live in `src/server/<feature>/api.ts`; mutations implemented as Server Actions live in `src/server/<feature>/actions.ts`.
+- Third-party initialization lives in `src/lib`. Server adapters use `import "server-only"`; browser adapters use `"use client"`.
+- Screens and components hold no database or backend implementation details.
+
+Feature names align across `screens` and `server`, following a lightweight vertical-slice structure.
+
+## Commands
+
+```bash
+npm run dev            # Start the development server
+npm run build          # Create a production build
+npm run lint           # Run ESLint
+npm run db:introspect  # Generate the Drizzle schema from a non-production DB
+```
+
+The database schema is owned outside this application. Do not run introspection against production.
