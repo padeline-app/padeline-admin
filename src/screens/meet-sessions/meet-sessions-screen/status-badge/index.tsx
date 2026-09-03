@@ -1,18 +1,22 @@
 import { Badge } from "@/components/ui/badge";
-import { SESSION_STATUS_LABELS } from "@/lib/format";
-import type { SessionStatus } from "@/lib/types";
+import { MEET_SESSION_STATUS_LABELS } from "@/lib/format";
+import type { MeetSessionStatus } from "@/lib/types";
 
-const STATUS_CLASSES: Record<SessionStatus, string> = {
+const STATUS_CLASSES: Record<MeetSessionStatus, string> = {
   SCHEDULED: "bg-secondary text-secondary-foreground",
   IN_PROGRESS: "bg-accent text-accent-foreground",
   TEAMS_ASSIGNED: "bg-warning/15 text-warning",
   COMPLETED: "bg-muted text-muted-foreground",
 };
 
-export function StatusBadge({ status }: { status: SessionStatus }) {
+export function MeetSessionStatusBadge({
+  status,
+}: {
+  status: MeetSessionStatus;
+}) {
   return (
     <Badge className={STATUS_CLASSES[status]}>
-      {SESSION_STATUS_LABELS[status]}
+      {MEET_SESSION_STATUS_LABELS[status]}
     </Badge>
   );
 }

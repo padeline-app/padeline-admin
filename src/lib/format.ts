@@ -1,4 +1,4 @@
-import type { GameMode, MeetFormat, SessionStatus } from "./types";
+import type { GameMode, MeetFormat, MeetSessionStatus } from "./types";
 
 // Labels match the mobile app's vocabulary exactly
 // (mobile-app/src/utils/meetFormatters.ts, src/api/static.ts).
@@ -16,7 +16,7 @@ export const MEET_FORMAT_LABELS: Record<MeetFormat, string> = {
   TEAM_MEXICANO: "Team Mexicano",
 };
 
-export const SESSION_STATUS_LABELS: Record<SessionStatus, string> = {
+export const MEET_SESSION_STATUS_LABELS: Record<MeetSessionStatus, string> = {
   SCHEDULED: "Scheduled",
   IN_PROGRESS: "In Progress",
   TEAMS_ASSIGNED: "Teams Assigned",

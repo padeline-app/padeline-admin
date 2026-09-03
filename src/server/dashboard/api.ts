@@ -3,12 +3,12 @@ import "server-only";
 import { and, asc, desc, eq, gte, isNull, sql } from "drizzle-orm";
 import { getDb } from "@/lib/drizzle/client";
 import { meetSession, user, venue } from "@/lib/drizzle/schema/schema";
-import type { SessionStatus } from "@/lib/drizzle/types";
+import type { MeetSessionStatus } from "@/lib/drizzle/types";
 
 export async function getDashboardStats() {
   const db = getDb();
 
-  const [[players], [venues], [sessions], statusRows, upcoming, recent] =
+  const [[players], [venues], [meetSessions], statusRows, upcoming, recent] =
     await Promise.all([
       db
         .select({ count: sql<number>`count(*)::int` })
@@ -61,20 +61,20 @@ export async function getDashboardStats() {
         .limit(5),
     ]);
 
-  const sessionsByStatus: Record<SessionStatus, number> = {
+  const meetSessionsByStatus: Record<MeetSessionStatus, number> = {
     SCHEDULED: 0,
     IN_PROGRESS: 0,
     TEAMS_ASSIGNED: 0,
     COMPLETED: 0,
   };
-  for (const row of statusRows) sessionsByStatus[row.status] = row.count;
+  for (const row of statusRows) meetSessionsByStatus[row.status] = row.count;
 
   return {
     totalPlayers: players.count,
     totalVenues: venues.count,
-    totalSessions: sessions.count,
-    sessionsByStatus,
-    upcomingSessions: upcoming,
+    totalMeetSessions: meetSessions.count,
+    meetSessionsByStatus,
+    upcomingMeetSessions: upcoming,
     recentPlayers: recent,
   };
 }

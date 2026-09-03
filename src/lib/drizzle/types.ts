@@ -10,7 +10,7 @@ export type MeetFormat =
   | "TEAM_AMERICANO"
   | "TEAM_MEXICANO";
 
-export type SessionStatus =
+export type MeetSessionStatus =
   | "SCHEDULED"
   | "IN_PROGRESS"
   | "TEAMS_ASSIGNED"
@@ -18,4 +18,4 @@ export type SessionStatus =
 
 export type ParticipantRole = "ORGANISER" | "PARTICIPANT" | "UMPIRE";
 
-export type AdminRole = "ADMIN" | "SUPER_ADMIN";
+export type AdminRole = "OWNER" | "ADMIN" | "VIEWER";

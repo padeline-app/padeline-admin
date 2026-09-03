@@ -19,10 +19,10 @@ export function DashboardScreen({ stats }: { stats: DashboardStats }) {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Players" value={stats.totalPlayers} />
         <StatCard label="Venues" value={stats.totalVenues} />
-        <StatCard label="Sessions" value={stats.totalSessions} />
+        <StatCard label="Sessions" value={stats.totalMeetSessions} />
         <StatCard
           label="In progress"
-          value={stats.sessionsByStatus.IN_PROGRESS}
+          value={stats.meetSessionsByStatus.IN_PROGRESS}
           hint="Sessions running now"
         />
       </div>
@@ -41,25 +41,25 @@ export function DashboardScreen({ stats }: { stats: DashboardStats }) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {stats.upcomingSessions.length === 0 ? (
+            {stats.upcomingMeetSessions.length === 0 ? (
               <p className="py-6 text-center text-sm text-muted-foreground">
                 No upcoming sessions.
               </p>
             ) : (
               <ul className="divide-y divide-border">
-                {stats.upcomingSessions.map((session) => (
+                {stats.upcomingMeetSessions.map((meetSession) => (
                   <li
-                    key={session.id}
+                    key={meetSession.id}
                     className="flex items-center justify-between py-2.5"
                   >
                     <div>
-                      <p className="text-sm font-medium">{session.title}</p>
+                      <p className="text-sm font-medium">{meetSession.title}</p>
                       <p className="text-xs text-muted-foreground">
-                        {session.venueName}
+                        {meetSession.venueName}
                       </p>
                     </div>
                     <span className="text-sm text-muted-foreground">
-                      {formatDateTime({ value: session.startsAt })}
+                      {formatDateTime({ value: meetSession.startsAt })}
                     </span>
                   </li>
                 ))}

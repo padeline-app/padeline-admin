@@ -10,6 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { RoleBadge, ROLE_HINTS } from "@/components/role-badge";
 import { signOut } from "@/server/auth/actions";
 import { useAdminAuth } from "@/lib/firebase/admin-auth";
 
@@ -37,6 +38,12 @@ export function Header() {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel className="font-normal text-muted-foreground">
             {user.email}
+          </DropdownMenuLabel>
+          <DropdownMenuLabel className="flex items-center gap-2 pt-0">
+            <RoleBadge role={user.role} />
+            <span className="text-xs font-normal text-muted-foreground">
+              {ROLE_HINTS[user.role]}
+            </span>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <form action={signOut}>

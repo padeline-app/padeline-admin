@@ -6,6 +6,8 @@ import { redirect } from "next/navigation";
 import { getDb } from "@/lib/drizzle/client";
 import { adminUser } from "@/lib/drizzle/schema/schema";
 import { verifySession } from "./session";
+import { defineAbilitiesFor } from "@/lib/abilities";
+import type { AdminAction, AdminSubject } from "@/lib/abilities";
 import type { AdminUser } from "@/lib/types";
 
 const ADMIN_EMAIL_DOMAIN = "@padeline.net";
@@ -49,3 +51,14 @@ export const requireAdmin = cache(async (): Promise<AdminUser> => {
     role: record.role,
   };
 });
+
+export async function requireAbility(
+  action: AdminAction,
+  subject: AdminSubject,
+): Promise<AdminUser> {
+  const user = await requireAdmin();
+  if (!defineAbilitiesFor(user.role).can(action, subject)) {
+    redirect("/denied");
+  }
+  return user;
+}

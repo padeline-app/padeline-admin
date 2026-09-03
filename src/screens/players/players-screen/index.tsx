@@ -1,6 +1,7 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
+import { Pagination } from "@/components/pagination";
 import type { ListPlayersResult } from "@/server/players/api";
 import { PlayersTable } from "./players-table";
 import { PlayersSearchForm } from "./search-form";
@@ -9,10 +10,12 @@ export function PlayersScreen({
   players,
   total,
   search,
+  page,
 }: {
   players: ListPlayersResult["players"];
   total: number;
   search?: string;
+  page: number;
 }) {
   return (
     <div className="space-y-4">
@@ -30,6 +33,7 @@ export function PlayersScreen({
           <PlayersTable players={players} />
         </CardContent>
       </Card>
+      <Pagination page={page} total={total} />
     </div>
   );
 }

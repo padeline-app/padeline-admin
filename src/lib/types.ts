@@ -2,10 +2,10 @@ import type {
   AdminRole,
   GameMode,
   MeetFormat,
-  SessionStatus,
+  MeetSessionStatus,
 } from "@/lib/drizzle/types";
 
-export type { AdminRole, GameMode, MeetFormat, SessionStatus };
+export type { AdminRole, GameMode, MeetFormat, MeetSessionStatus };
 
 export interface AdminUser {
   uid: string;

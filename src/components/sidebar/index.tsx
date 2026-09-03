@@ -5,20 +5,22 @@ import { usePathname } from "next/navigation";
 import {
   BuildingsIcon,
   CalendarDotsIcon,
+  ShieldCheckIcon,
   SquaresFourIcon,
   UsersIcon,
 } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 
-const NAV_ITEMS = [
-  { href: "/admin", label: "Dashboard", icon: SquaresFourIcon },
-  { href: "/admin/venues", label: "Venues", icon: BuildingsIcon },
-  { href: "/admin/players", label: "Players", icon: UsersIcon },
-  { href: "/admin/sessions", label: "Sessions", icon: CalendarDotsIcon },
-] as const;
-
 export function Sidebar() {
   const pathname = usePathname();
+
+  const navItems = [
+    { href: "/admin", label: "Dashboard", icon: SquaresFourIcon },
+    { href: "/admin/venues", label: "Venues", icon: BuildingsIcon },
+    { href: "/admin/players", label: "Players", icon: UsersIcon },
+    { href: "/admin/sessions", label: "Sessions", icon: CalendarDotsIcon },
+    { href: "/admin/admins", label: "Admins", icon: ShieldCheckIcon },
+  ];
 
   return (
     <aside className="flex w-56 shrink-0 flex-col border-r border-sidebar-border bg-sidebar">
@@ -27,11 +29,9 @@ export function Sidebar() {
         <span className="ml-1.5 text-sm text-muted-foreground">Admin</span>
       </div>
       <nav className="flex flex-col gap-1 p-2">
-        {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+        {navItems.map(({ href, label, icon: Icon }) => {
           const active =
-            href === "/admin"
-              ? pathname === "/admin"
-              : pathname.startsWith(href);
+            href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
           return (
             <Link
               key={href}

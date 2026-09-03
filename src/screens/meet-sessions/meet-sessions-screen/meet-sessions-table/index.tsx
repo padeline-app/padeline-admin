@@ -12,15 +12,15 @@ import {
   GAME_MODE_LABELS,
   MEET_FORMAT_LABELS,
 } from "@/lib/format";
-import type { ListSessionsResult } from "@/server/sessions/api";
-import { StatusBadge } from "../status-badge";
+import type { ListMeetSessionsResult } from "@/server/meet-sessions/api";
+import { MeetSessionStatusBadge } from "../status-badge";
 
-export function SessionsTable({
-  sessions,
+export function MeetSessionsTable({
+  meetSessions,
 }: {
-  sessions: ListSessionsResult["sessions"];
+  meetSessions: ListMeetSessionsResult["meetSessions"];
 }) {
-  if (sessions.length === 0) {
+  if (meetSessions.length === 0) {
     return (
       <p className="py-12 text-center text-sm text-muted-foreground">
         No sessions found.
@@ -43,25 +43,27 @@ export function SessionsTable({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {sessions.map((session) => (
-          <TableRow key={session.id}>
-            <TableCell className="font-medium">{session.title}</TableCell>
-            <TableCell>{formatDateTime({ value: session.startsAt })}</TableCell>
+        {meetSessions.map((meetSession) => (
+          <TableRow key={meetSession.id}>
+            <TableCell className="font-medium">{meetSession.title}</TableCell>
+            <TableCell>
+              {formatDateTime({ value: meetSession.startsAt })}
+            </TableCell>
             <TableCell>
               <Badge variant="secondary">
-                {GAME_MODE_LABELS[session.gameMode]}
+                {GAME_MODE_LABELS[meetSession.gameMode]}
               </Badge>
             </TableCell>
             <TableCell className="text-muted-foreground">
-              {MEET_FORMAT_LABELS[session.meetFormat]}
+              {MEET_FORMAT_LABELS[meetSession.meetFormat]}
             </TableCell>
-            <TableCell>{session.venueName}</TableCell>
-            <TableCell>{session.organiserName}</TableCell>
+            <TableCell>{meetSession.venueName}</TableCell>
+            <TableCell>{meetSession.organiserName}</TableCell>
             <TableCell>
-              {session.participantCount}/{session.maxParticipants}
+              {meetSession.participantCount}/{meetSession.maxParticipants}
             </TableCell>
             <TableCell>
-              <StatusBadge status={session.status} />
+              <MeetSessionStatusBadge status={meetSession.status} />
             </TableCell>
           </TableRow>
         ))}

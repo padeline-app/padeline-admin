@@ -1,15 +1,18 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { GAME_MODE_LABELS, SESSION_STATUS_LABELS } from "@/lib/format";
-import type { GameMode, SessionStatus } from "@/lib/types";
+import {
+  GAME_MODE_LABELS,
+  MEET_SESSION_STATUS_LABELS,
+} from "@/lib/format";
+import type { GameMode, MeetSessionStatus } from "@/lib/types";
 
-export function SessionsFilters({
+export function MeetSessionsFilters({
   status,
   gameMode,
   search,
 }: {
-  status?: SessionStatus;
+  status?: MeetSessionStatus;
   gameMode?: GameMode;
   search?: string;
 }) {
@@ -17,7 +20,7 @@ export function SessionsFilters({
     nextStatus,
     nextGameMode,
   }: {
-    nextStatus?: SessionStatus;
+    nextStatus?: MeetSessionStatus;
     nextGameMode?: GameMode;
   }) {
     const params = new URLSearchParams();
@@ -58,7 +61,10 @@ export function SessionsFilters({
           target: href({ nextGameMode: gameMode }),
         })}
         {(
-          Object.entries(SESSION_STATUS_LABELS) as [SessionStatus, string][]
+          Object.entries(MEET_SESSION_STATUS_LABELS) as [
+            MeetSessionStatus,
+            string,
+          ][]
         ).map(([value, label]) =>
           chip({
             label,

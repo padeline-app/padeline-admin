@@ -1,7 +1,7 @@
 import { MagnifyingGlassIcon } from "@phosphor-icons/react";
 import { Input } from "@/components/ui/input";
 
-export function SessionsSearchForm({
+export function MeetSessionsSearchForm({
   defaultValue,
 }: {
   defaultValue?: string;

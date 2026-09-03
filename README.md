@@ -17,10 +17,11 @@ Open [http://localhost:3000/admin](http://localhost:3000/admin).
 ## Current status
 
 Access is two-layered: a verified `@padeline.net` Google account (token claims,
-checked on every request) plus an active `admin_user` row. The row is created
-automatically on first sign-in — no manual provisioning. Revoke a person by
-soft-deleting their row; their next request is denied. Future sign-in providers
-(Apple) reuse the same `createAdminSession` action unchanged.
+checked on every request) plus an active `admin_user` row. Sign-in provisions
+new rows as `ADMIN` — never `OWNER`. The first OWNER is a one-time manual
+INSERT; after that, tiers (`OWNER | ADMIN | VIEWER`) are managed in the portal
+at `/admin/admins`. Revoking a row takes effect on the next request. See the
+`padeline-iam` skill for the full model.
 
 ## Project structure
 
@@ -44,22 +45,24 @@ padeline-admin/
 │   │   ├── sidebar/
 │   │   └── ui/                 # Shadcn-managed primitives
 │   ├── lib/
-│   │   ├── drizzle/            # config.ts, client.ts (server-only), generated schema/, types
+│   │   ├── drizzle/            # config.ts, client.ts (server-only), generated schema/ (never hand-edit — re-introspect), types
 │   │   ├── firebase/           # admin.ts (server-only), client.ts (browser), admin-auth.tsx (auth provider)
 │   │   ├── format.ts           # Shared display formatting
 │   │   ├── types.ts            # Shared types
 │   │   └── utils.ts
 │   ├── screens/                # Client screens grouped by feature
+│   │   ├── admins/admins-screen/
 │   │   ├── dashboard/dashboard-screen/
+│   │   ├── meet-sessions/meet-sessions-screen/
 │   │   ├── players/players-screen/
-│   │   ├── sessions/sessions-screen/
 │   │   ├── sign-in/sign-in-screen/
 │   │   └── denied/denied-screen/
 │   ├── server/                 # Server-only application logic, grouped by feature
 │   │   ├── auth/               # Admin checks, sessions, and auth mutations
+│   │   ├── admins/api.ts       # Admin roster reads
 │   │   ├── dashboard/api.ts    # Dashboard reads
+│   │   ├── meet-sessions/api.ts # Meet session reads
 │   │   ├── players/api.ts      # Player reads
-│   │   ├── sessions/api.ts     # Session reads
 │   │   └── venues/api.ts       # Venue reads
 │   └── proxy.ts                # Lightweight request redirects
 ├── .env                        # Local environment values; CI/CD injects deployed values

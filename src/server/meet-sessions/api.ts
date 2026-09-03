@@ -8,16 +8,16 @@ import {
   user,
   venue,
 } from "@/lib/drizzle/schema/schema";
-import type { GameMode, SessionStatus } from "@/lib/drizzle/types";
+import type { GameMode, MeetSessionStatus } from "@/lib/drizzle/types";
 
-export async function listSessions({
+export async function listMeetSessions({
   status,
   gameMode,
   search,
   page = 1,
   pageSize = 25,
 }: {
-  status?: SessionStatus;
+  status?: MeetSessionStatus;
   gameMode?: GameMode;
   search?: string;
   page?: number;
@@ -40,7 +40,7 @@ export async function listSessions({
     .groupBy(meetParticipant.meetSessionId)
     .as("participant_counts");
 
-  const [sessions, [totals]] = await Promise.all([
+  const [meetSessions, [totals]] = await Promise.all([
     getDb()
       .select({
         id: meetSession.id,
@@ -77,7 +77,9 @@ export async function listSessions({
       .where(and(...filters)),
   ]);
 
-  return { sessions, total: totals.count };
+  return { meetSessions, total: totals.count };
 }
 
-export type ListSessionsResult = Awaited<ReturnType<typeof listSessions>>;
+export type ListMeetSessionsResult = Awaited<
+  ReturnType<typeof listMeetSessions>
+>;

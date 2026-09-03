@@ -1,6 +1,7 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
+import { Pagination } from "@/components/pagination";
 import type { ListVenuesResult } from "@/server/venues/api";
 import { VenuesSearchForm } from "./search-form";
 import { VenuesTable } from "./venues-table";
@@ -9,10 +10,12 @@ export function VenuesScreen({
   venues,
   total,
   search,
+  page,
 }: {
   venues: ListVenuesResult["venues"];
   total: number;
   search?: string;
+  page: number;
 }) {
   return (
     <div className="space-y-4">
@@ -30,6 +33,7 @@ export function VenuesScreen({
           <VenuesTable venues={venues} />
         </CardContent>
       </Card>
+      <Pagination page={page} total={total} />
     </div>
   );
 }

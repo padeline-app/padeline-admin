@@ -9,7 +9,7 @@ Before creating a file, identify its responsibility, runtime, owning feature, an
 
 ## Placement
 
-- `src/app`: Next.js routes, layouts, route handlers, and global styles. `page.tsx` performs the server-side data calls and passes results to its screen via props. Keep it thin: route inputs, one fetch, render the screen.
+- `src/app`: Next.js routes, layouts, route handlers, error boundaries (`error.tsx`), and global styles. `page.tsx` performs the server-side data calls and passes results to its screen via props. Keep it thin: route inputs, one fetch, render the screen.
 - `src/screens/<feature>/<feature>-screen`: The complete page-level screen — the folder's `index.tsx` is the screen itself, a client component that orchestrates the page's logic.
 - `src/screens/<feature>/<feature>-screen/<component>`: One-off and non-shadcn components orchestrated by that screen, each in its own folder.
 - `src/components/<name>`: Shared components used across features — header, footer, sidebar, and similar chrome — placed directly under `src/components` with no extra grouping folders.

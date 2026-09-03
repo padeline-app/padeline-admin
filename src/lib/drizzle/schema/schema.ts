@@ -1,13 +1,13 @@
 import { pgTable, unique, varchar, timestamp, numeric, jsonb, foreignKey, integer, boolean, date, pgMaterializedView, bigint } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
-import type { AdminRole, GameMode, MeetFormat, ParticipantRole, SessionStatus } from "../types"
+import type { AdminRole, GameMode, MeetFormat, MeetSessionStatus, ParticipantRole } from "../types"
 
 
 
 export const adminUser = pgTable("admin_user", {
 	firebaseUid: varchar("firebase_uid").primaryKey().notNull(),
 	email: varchar().notNull(),
-	role: varchar().$type<AdminRole>().default('ADMIN').notNull(),
+	role: varchar().$type<AdminRole>().default('VIEWER').notNull(),
 	lastLoginAt: timestamp("last_login_at", { withTimezone: true, mode: 'string' }),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
 	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
@@ -101,7 +101,7 @@ export const meetSession = pgTable("meet_session", {
 	gameMode: varchar("game_mode").$type<GameMode>().notNull(),
 	meetFormat: varchar("meet_format").$type<MeetFormat>().notNull(),
 	maxParticipants: integer("max_participants").notNull(),
-	status: varchar().$type<SessionStatus>().notNull(),
+	status: varchar().$type<MeetSessionStatus>().notNull(),
 	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
 	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow().notNull(),
 	deletedAt: timestamp("deleted_at", { mode: 'string' }),
